@@ -133,66 +133,64 @@ export default function BooksList({ searchParam, page, setPage }) {
             ))}
         </div>
       </div>
-      <div className="flex items-end justify-center min-h-screen">
-        <div className="flex justify-center gap-1 mt-5 ">
-          <button
-            onClick={handleFirstPageClick}
-            className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
-          >
-            <p className="font-bold text-md">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M15.79 14.77a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L11.832 10l3.938 3.71a.75.75 0 01.02 1.06zm-6 0a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L5.832 10l3.938 3.71a.75.75 0 01.02 1.06z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </p>
-          </button>
-          <button
-            onClick={handlePreviousPageClick}
-            className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
-          >
-            <p className="font-bold text-md">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </p>
-          </button>
-          <button
-            onClick={handleNextPageClick}
-            className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
-          >
-            <p className="font-bold text-md">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </p>
-          </button>
-        </div>
+      <div className="flex justify-center gap-1 mt-10">
+        <button
+          onClick={handleFirstPageClick}
+          className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
+        >
+          <p className="font-bold text-md">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M15.79 14.77a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L11.832 10l3.938 3.71a.75.75 0 01.02 1.06zm-6 0a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L5.832 10l3.938 3.71a.75.75 0 01.02 1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </p>
+        </button>
+        <button
+          onClick={handlePreviousPageClick}
+          className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
+        >
+          <p className="font-bold text-md">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </p>
+        </button>
+        <button
+          onClick={handleNextPageClick}
+          className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
+        >
+          <p className="font-bold text-md">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </p>
+        </button>
       </div>
     </>
   )

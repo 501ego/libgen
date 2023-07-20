@@ -34,7 +34,7 @@ function App() {
             setReset={setReset}
           />
         </aside>
-        <section className="p-2 flex-wrap w-full h-full">
+        <section className="p-2 flex-wrap w-full">
           <SearchBar onSearch={handleSearch} />
           <BooksList searchParam={searchParam} page={page} setPage={setPage} />
         </section>
