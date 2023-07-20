@@ -9,7 +9,7 @@
   publish = "dist"
 
 [functions]
-  external_node_modules = ["express"]
+  external_node_modules = ["express", "keyv"]
   node_bundler = "esbuild"
 
 [[redirects]]
