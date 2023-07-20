@@ -20,7 +20,7 @@ function App() {
     setSearchParam({ query: '', category })
     setPage(0)
   }
-  console.log(searchParam)
+
   return (
     <>
       <header className="bg-zinc-800 align-middle h-[82px]">
