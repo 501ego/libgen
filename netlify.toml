@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  functions = "src/api"
+  publish = "dist"
+
+[dev]
+  command = "npm run start"
+  functions = "src/api"
+  publish = "dist"
