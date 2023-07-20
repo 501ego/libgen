@@ -18,11 +18,11 @@ export default function BooksList({ searchParam, page, setPage }) {
     const startIndex = page * itemsPerPage
     if (query) {
       response = await axios.get(
-        `http://localhost:5000/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
+        `${process.env.REACT_APP_API_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
       )
     } else if (category) {
       response = await axios.get(
-        `http://localhost:5000/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
+        `${process.env.REACT_APP_API_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
       )
     }
 
