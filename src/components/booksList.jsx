@@ -6,7 +6,7 @@ import Dialogs from './dialogs'
 export default function BooksList({ searchParam, page, setPage }) {
   const BASE_URL =
     process.env.NODE_ENV === 'production'
-      ? '/.netlify/functions/server'
+      ? '/.netlify/functions'
       : 'http://localhost:5000'
   const [books, setBooks] = useState([])
   const [loading, setLoading] = useState(false)

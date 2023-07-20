@@ -4,16 +4,16 @@
   publish = "dist"
 
 [dev]
-  command = "npm run start"
+  command = "npm run dev"
   functions = "src/api"
   publish = "dist"
 
 [functions]
-  external_node_modules = ["express", "keyv"]
+  external_node_modules = ["express"]
   node_bundler = "esbuild"
 
 [[redirects]]
-  force = true
   from = "/api/*"
-  status = 200
   to = "/.netlify/functions/server/:splat"
+  status = 200
+
