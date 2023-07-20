@@ -4,6 +4,10 @@ import '../input.css'
 import Dialogs from './dialogs'
 
 export default function BooksList({ searchParam, page, setPage }) {
+  const BASE_URL =
+    process.env.NODE_ENV === 'production'
+      ? '/.netlify/functions'
+      : 'http://localhost:5000'
   const [books, setBooks] = useState([])
   const [loading, setLoading] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
@@ -18,11 +22,11 @@ export default function BooksList({ searchParam, page, setPage }) {
     const startIndex = page * itemsPerPage
     if (query) {
       response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
+        `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
       )
     } else if (category) {
       response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
+        `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
       )
     }
 
