@@ -70,7 +70,7 @@ app.get('/search', async (req, res) => {
             categories: item.volumeInfo.categories,
             cover: imageLinks
               ? imageLinks.thumbnail
-              : 'http://localhost:5000/assets/cover.png',
+              : '/.netlify/functions/assets/cover.png',
             downloadLink: downloadLinks[title],
           })
 
@@ -100,5 +100,5 @@ app.get('/search', async (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`)
+  console.log(`Server listening at /.netlify/functions:${port}`)
 })
