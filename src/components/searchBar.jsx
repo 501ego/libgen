@@ -14,7 +14,7 @@ export default function SearchBar({ onSearch }) {
     <div>
       <form
         onSubmit={handleSubmit}
-        className="flex justify-center text-center w-full mt-5 md:ml-2"
+        className="flex justify-center text-center w-full mt-5"
       >
         <input
           type="text"

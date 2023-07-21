@@ -62,9 +62,7 @@ exports.handler = async function (event, context) {
             publishedDate: item.volumeInfo.publishedDate,
             description: item.volumeInfo.description,
             categories: item.volumeInfo.categories,
-            cover: imageLinks
-              ? imageLinks.thumbnail
-              : '/.netlify/functions/assets/cover.png',
+            cover: imageLinks ? imageLinks.thumbnail : '/assets/cover.png',
             downloadLink: downloadLinks[title],
           })
 

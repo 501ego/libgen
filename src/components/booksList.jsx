@@ -4,10 +4,8 @@ import '../input.css'
 import Dialogs from './dialogs'
 
 export default function BooksList({ searchParam, page, setPage }) {
-  const BASE_URL =
-    process.env.NODE_ENV === 'production'
-      ? '/.netlify/functions'
-      : 'http://localhost:5000'
+  const BASE_URL = '/.netlify/functions'
+
   const [books, setBooks] = useState([])
   const [loading, setLoading] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
@@ -63,7 +61,6 @@ export default function BooksList({ searchParam, page, setPage }) {
 
       <div className="p-8 w-full m-auto">
         <h1 className="text-3xl font-bold text-center text-slate-50 mb-5">
-          {'Listado de Libros: '}
           {'"'}
           {searchParam.query
             ? searchParam.query.toUpperCase()
@@ -77,12 +74,12 @@ export default function BooksList({ searchParam, page, setPage }) {
             Cargando...
           </div>
         )}
-        <div className="grid gap-20 xl:grid-cols-3 lg:grid-cols-2 justify-center">
+        <div className="grid gap-10 xl:grid-cols-3 lg:grid-cols-2 justify-items-center items-center">
           {!loading &&
             books.map((book, index) => (
               <div key={`${book.title}-${index}`}>
                 <div key={`${book.title}-${index}`}>
-                  <div className="grid-flow bg-slate-50 rounded-lg shadow-lg shadow-black border-2 border-zinc-800 w-[270px] h-[400px]">
+                  <div className="grid-flow bg-slate-50 rounded-lg shadow-lg shadow-black border-2 border-zinc-800 w-[270px] h-[395px]">
                     <div className="px-2 text-center">
                       <h2 className="font-extrabold text-xl text-gray-700 overflow-hidden whitespace-nowrap w-full text-ellipsis mt-2 p-1">
                         {book.title.toUpperCase()}

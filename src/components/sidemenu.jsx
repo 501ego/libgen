@@ -62,7 +62,7 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
   }, [selected, setCurrentCategory])
 
   return (
-    <div className=" mt-2 text-center">
+    <div className="mt-2 text-center m-auto">
       <Switch
         checked={enabled}
         onChange={setEnabled}

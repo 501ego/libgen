@@ -26,7 +26,7 @@ function App() {
       <header className="bg-zinc-800 align-middle h-[82px]">
         <Navbar setQuery={handleSearch} />
       </header>
-      <main className="grow flex flex-row w-full max-w-7xl m-auto justify-center align-middle px-5">
+      <main className="grow flex flex-row w-full max-w-7xl m-auto justify-center align-middle px-8">
         <aside className="w-[250px] mt-[150px] hidden sm:block">
           <SideMenu
             setCurrentCategory={handleCategory}
