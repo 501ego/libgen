@@ -33,7 +33,7 @@ function App() {
         </div>
       </header>
       <main className="grow flex flex-row w-full max-w-7xl m-auto justify-center align-middle px-8">
-        <aside className="w-[250px] mt-[141px] hidden sm:block">
+        <aside className="w-[250px] mt-[130px] hidden sm:block">
           <SideMenu
             enabled={enabled}
             setEnabled={setEnabled}

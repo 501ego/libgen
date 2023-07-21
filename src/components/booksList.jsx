@@ -95,8 +95,8 @@ export default function BooksList({ searchParam, page, setPage }) {
         />
       )}
 
-      <div className="p-8 w-full m-auto">
-        <h1 className="text-3xl font-bold text-center text-slate-50 mb-5">
+      <div className="p-6 w-full m-auto">
+        <h1 className="text-2xl font-bold text-center text-slate-50 mb-5">
           {'"'}
           {searchParam.query
             ? searchParam.query.toUpperCase()
