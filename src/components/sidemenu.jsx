@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { RadioGroup } from '@headlessui/react'
-import { Switch } from '@headlessui/react'
 
 const plans = [
+  {
+    name: 'Ficción',
+    category: 'Fiction',
+  },
   {
     name: 'Filosofía',
     category: 'Philosophy',
@@ -41,9 +44,15 @@ const plans = [
   },
 ]
 
-export default function SideMenu({ setCurrentCategory, reset, setReset }) {
+export default function SideMenu({
+  enabled,
+  setEnabled,
+  setCurrentCategory,
+  reset,
+  setReset,
+}) {
   const [selected, setSelected] = useState(plans[0])
-  const [enabled, setEnabled] = useState(false)
+
   const selectedCategoryRef = useRef(selected.category)
 
   useEffect(() => {
@@ -62,32 +71,7 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
   }, [selected, setCurrentCategory])
 
   return (
-    <div className="mt-2 text-center m-auto">
-      <Switch
-        checked={enabled}
-        onChange={setEnabled}
-        className={`${enabled ? 'bg-rose-400' : 'bg-rose-400'}
-    relative inline-flex h-[47px] w-[130px] shrink-0 cursor-pointer rounded-full border-2 border-white shadow-xl shadow-zinc-800 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
-      >
-        <span
-          className={`absolute z-0 text-sm font-extrabold text-white ml-5 ${
-            enabled ? 'invisible' : 'visible'
-          }`}
-          style={{
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          Categorías
-        </span>
-        <span
-          aria-hidden="true"
-          className={`${enabled ? 'translate-x-[85px]' : 'translate-x-0'}
-      pointer-events-none inline-block h-[42px] w-[42px] transform rounded-full bg-white shadow-md shadow-zinc-600 ring-0 transition duration-200 ease-in-out`}
-        />
-      </Switch>
-
+    <div className="text-center m-auto">
       {enabled ? (
         <div className="sidebar hidden sm:block">
           <div className="w-full py-5">
@@ -104,8 +88,8 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
                       `${active ? 'ring-2 ring-zinc-900 ring-opacity-60' : ''}
                   ${
                     checked
-                      ? 'bg-rose-300  text-white shadow-xl shadow-zinc-900 '
-                      : 'bg-white shadow-xl shadow-zinc-900 hover:bg-rose-100 hover:text-white'
+                      ? 'bg-rose-400  text-white shadow-xl shadow-zinc-900 '
+                      : 'bg-white shadow-xl shadow-zinc-900 hover:bg-rose-200 hover:text-white'
                   }
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                     }
@@ -114,7 +98,7 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
                       <>
                         <div className="flex w-full items-center justify-between">
                           <div className="flex items-center">
-                            <div className="text-md font-bold">
+                            <div className="text-sm font-bold">
                               <RadioGroup.Label
                                 as="p"
                                 className={`${

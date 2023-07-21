@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import '../input.css'
 import Dialogs from './dialogs'
-import { set } from 'lodash'
 
 export default function BooksList({ searchParam, page, setPage }) {
   const BASE_URL = '/.netlify/functions'
@@ -13,7 +12,7 @@ export default function BooksList({ searchParam, page, setPage }) {
   const [noBooks, setNoBooks] = useState(false)
   const itemsPerPage = 12
   if (searchParam.category === '' && searchParam.query === '') {
-    searchParam.category = 'Philosophy'
+    searchParam.category = 'Fiction'
   }
 
   const fetchBooks = async (query, category, page = 0, retries = 2) => {
@@ -45,13 +44,13 @@ export default function BooksList({ searchParam, page, setPage }) {
               () => fetchBooks(query, category, page, retries - 1),
               3000
             )
+            return
           } else {
             console.error('Failed to fetch books after multiple attempts')
             setBooks([])
             setNoBooks(true)
           }
         }
-        setLoading(false)
       }
     } catch (error) {
       if (
@@ -61,13 +60,14 @@ export default function BooksList({ searchParam, page, setPage }) {
         console.log(`Attempt failed. Retrying... ${retries} attempts left.`)
         setBooks([])
         setTimeout(() => fetchBooks(query, category, page, retries - 1), 3000)
+        return
       } else {
         console.error('Failed to fetch books after multiple attempts', error)
         setBooks([])
-        setLoading(false)
         setNoBooks(true)
       }
     }
+    setLoading(false)
   }
 
   const handleNextPageClick = () => {
