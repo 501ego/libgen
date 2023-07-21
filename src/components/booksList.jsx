@@ -60,11 +60,7 @@ export default function BooksList({ searchParam, page, setPage }) {
           bookDescription={selectedBook}
         />
       )}
-      {loading && (
-        <div className="fixed inset-0 flex items-center justify-center text-3xl animate-pulse font-semibold text-rose-400">
-          Cargando...
-        </div>
-      )}
+
       <div className="p-8 w-full m-auto">
         <h1 className="text-3xl font-bold text-center text-slate-50 mb-5">
           {'Listado de Libros: '}
@@ -76,6 +72,11 @@ export default function BooksList({ searchParam, page, setPage }) {
             : ''}
           {'"'}
         </h1>
+        {loading && (
+          <div className="flex text-center justify-center text-3xl animate-pulse font-semibold text-rose-400 py-20">
+            Cargando...
+          </div>
+        )}
         <div className="grid gap-20 xl:grid-cols-3 lg:grid-cols-2 justify-center">
           {!loading &&
             books.map((book, index) => (

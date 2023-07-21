@@ -67,10 +67,10 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
         checked={enabled}
         onChange={setEnabled}
         className={`${enabled ? 'bg-rose-400' : 'bg-rose-400'}
-    relative inline-flex h-[35px] w-[130px] shrink-0 cursor-pointer rounded-full border-2 border-white shadow-xl shadow-zinc-800 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
+    relative inline-flex h-[47px] w-[130px] shrink-0 cursor-pointer rounded-full border-2 border-white shadow-xl shadow-zinc-800 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
       >
         <span
-          className={`absolute z-0 text-sm font-extrabold text-white ml-3 ${
+          className={`absolute z-0 text-sm font-extrabold text-white ml-5 ${
             enabled ? 'invisible' : 'visible'
           }`}
           style={{
@@ -83,8 +83,8 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
         </span>
         <span
           aria-hidden="true"
-          className={`${enabled ? 'translate-x-[96px]' : 'translate-x-0'}
-      pointer-events-none inline-block h-[30px] w-[30px] transform rounded-full bg-white shadow-md shadow-zinc-600 ring-0 transition duration-200 ease-in-out`}
+          className={`${enabled ? 'translate-x-[85px]' : 'translate-x-0'}
+      pointer-events-none inline-block h-[42px] w-[42px] transform rounded-full bg-white shadow-md shadow-zinc-600 ring-0 transition duration-200 ease-in-out`}
         />
       </Switch>
 
