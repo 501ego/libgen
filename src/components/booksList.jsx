@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import '../input.css'
 import Dialogs from './dialogs'
+import { set } from 'lodash'
 
 export default function BooksList({ searchParam, page, setPage }) {
   const BASE_URL = '/.netlify/functions'
@@ -9,29 +10,64 @@ export default function BooksList({ searchParam, page, setPage }) {
   const [books, setBooks] = useState([])
   const [loading, setLoading] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
+  const [noBooks, setNoBooks] = useState(false)
   const itemsPerPage = 12
   if (searchParam.category === '' && searchParam.query === '') {
     searchParam.category = 'Philosophy'
   }
 
-  const fetchBooks = async (query, category, page = 0) => {
+  const fetchBooks = async (query, category, page = 0, retries = 2) => {
     setLoading(true)
+    setNoBooks(false)
     let response
     const startIndex = page * itemsPerPage
-    if (query) {
-      response = await axios.get(
-        `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
-      )
-    } else if (category) {
-      response = await axios.get(
-        `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
-      )
-    }
+    try {
+      if (query) {
+        response = await axios.get(
+          `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
+        )
+      } else if (category) {
+        response = await axios.get(
+          `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
+        )
+      }
 
-    if (response && response.data) {
-      setBooks(response.data)
+      if (response && response.data) {
+        if (response.data.length > 0) {
+          setBooks(response.data)
+          setNoBooks(false)
+        } else {
+          console.log('No books returned')
+          setBooks([])
+          if (retries > 0) {
+            console.log(`No books found. Retrying... ${retries} attempts left.`)
+            setTimeout(
+              () => fetchBooks(query, category, page, retries - 1),
+              3000
+            )
+          } else {
+            console.error('Failed to fetch books after multiple attempts')
+            setBooks([])
+            setNoBooks(true)
+          }
+        }
+        setLoading(false)
+      }
+    } catch (error) {
+      if (
+        (error.response && error.response.status === 502) ||
+        (retries > 0 && !error.message.includes('No books returned'))
+      ) {
+        console.log(`Attempt failed. Retrying... ${retries} attempts left.`)
+        setBooks([])
+        setTimeout(() => fetchBooks(query, category, page, retries - 1), 3000)
+      } else {
+        console.error('Failed to fetch books after multiple attempts', error)
+        setBooks([])
+        setLoading(false)
+        setNoBooks(true)
+      }
     }
-    setLoading(false)
   }
 
   const handleNextPageClick = () => {
@@ -74,62 +110,69 @@ export default function BooksList({ searchParam, page, setPage }) {
             Cargando...
           </div>
         )}
-        <div className="grid gap-10 xl:grid-cols-3 lg:grid-cols-2 justify-items-center items-center">
-          {!loading &&
-            books.map((book, index) => (
-              <div key={`${book.title}-${index}`}>
+
+        {noBooks ? (
+          <div className="flex text-center justify-center text-3xl animate-pulse font-semibold text-rose-400 py-20">
+            No se encontraron libros.
+          </div>
+        ) : (
+          <div className="grid gap-10 xl:grid-cols-3 lg:grid-cols-2 justify-items-center items-center">
+            {!loading &&
+              books.map((book, index) => (
                 <div key={`${book.title}-${index}`}>
-                  <div className="grid-flow bg-slate-50 rounded-lg shadow-lg shadow-black border-2 border-zinc-800 w-[270px] h-[395px]">
-                    <div className="px-2 text-center">
-                      <h2 className="font-extrabold text-xl text-gray-700 overflow-hidden whitespace-nowrap w-full text-ellipsis mt-2 p-1">
-                        {book.title.toUpperCase()}
-                      </h2>
-                    </div>
-                    <div>
-                      <a
-                        className="flex p-1 mb-7"
-                        onClick={() => {
-                          setSelectedBook(book)
-                        }}
-                      >
-                        <img
-                          src={book.cover}
-                          className="w-[145px] h-[200px] border-r-4 border-b-4 border-slate-50 rounded-br-lg m-auto mt-2 rounded-sm shadow-md shadow-black cursor-pointer hover:rotate-2 hover:shadow-xl hover:shadow-black transition duration-300 ease-in-out"
-                        />
-                      </a>
-                    </div>
-                    <hr className="border-slate-900 mb-3 border" />
-                    <div className="px-2 text-center">
-                      <p className="text-gray-900 text-sm overflow-hidden whitespace-nowrap w-full text-ellipsis">
-                        ({book.author})
-                      </p>
-                    </div>
-                    <div className="flex justify-end px-4 mt-6">
-                      <p className="text-gray-900 text-sm overflow-hidden whitespace-nowrap w-full text-ellipsis mt-2 font-bold">
-                        {book.publishedDate !== 'Desconocido'
-                          ? ` ${book.publishedDate}`
-                          : ''}
-                      </p>
-                      {book.downloadLink ? (
+                  <div key={`${book.title}-${index}`}>
+                    <div className="grid-flow bg-slate-50 rounded-lg shadow-lg shadow-black border-2 border-zinc-800 w-[270px] h-[395px]">
+                      <div className="px-2 text-center">
+                        <h2 className="font-extrabold text-xl text-gray-700 overflow-hidden whitespace-nowrap w-full text-ellipsis mt-2 p-1">
+                          {book.title.toUpperCase()}
+                        </h2>
+                      </div>
+                      <div>
                         <a
-                          href={book.downloadLink}
-                          className="h-[30px] inline-block bg-blue-300 py-1 px-2 rounded-md shadow-md shadow-black hover:bg-blue-500 hover:text-white border border-black"
+                          className="flex p-1 mb-7"
+                          onClick={() => {
+                            setSelectedBook(book)
+                          }}
                         >
-                          <p className="text-center font-bold text-sm">
-                            Descarga
-                          </p>
+                          <img
+                            src={book.cover}
+                            className="w-[145px] h-[200px] border-r-4 border-b-4 border-slate-50 rounded-br-lg m-auto mt-2 rounded-sm shadow-md shadow-black cursor-pointer hover:rotate-2 hover:shadow-xl hover:shadow-black transition duration-300 ease-in-out"
+                          />
                         </a>
-                      ) : (
-                        <p className="text-red-400 text-sm mt-3 p-1">
-                          No existe url de descarga.
+                      </div>
+                      <hr className="border-slate-900 mb-3 border" />
+                      <div className="px-2 text-center">
+                        <p className="text-gray-900 text-sm overflow-hidden whitespace-nowrap w-full text-ellipsis">
+                          ({book.author})
                         </p>
-                      )}
+                      </div>
+                      <div className="flex justify-end px-4 mt-6">
+                        <p className="text-gray-900 text-sm overflow-hidden whitespace-nowrap w-full text-ellipsis mt-2 font-bold">
+                          {book.publishedDate !== 'Desconocido'
+                            ? ` ${book.publishedDate}`
+                            : ''}
+                        </p>
+                        {book.downloadLink ? (
+                          <a
+                            href={book.downloadLink}
+                            className="h-[30px] inline-block bg-blue-300 py-1 px-2 rounded-md shadow-md shadow-black hover:bg-blue-500 hover:text-white border border-black"
+                          >
+                            <p className="text-center font-bold text-sm">
+                              Descarga
+                            </p>
+                          </a>
+                        ) : (
+                          <p className="text-red-400 text-sm mt-3 p-1">
+                            No existe url de descarga.
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-        </div>
+              ))}
+          </div>
+        )}
       </div>
       <div className="flex justify-center gap-1 mt-10">
         <button
