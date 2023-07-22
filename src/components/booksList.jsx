@@ -3,71 +3,106 @@ import axios from 'axios'
 import '../input.css'
 import Dialogs from './dialogs'
 
-export default function BooksList({ searchParam, page, setPage }) {
-  const BASE_URL = '/.netlify/functions'
+const BASE_URL = '/.netlify/functions'
+const itemsPerPage = 12
 
+const fetchBooks = async (
+  query,
+  category,
+  language,
+  page = 0,
+  retries = 2,
+  setBooks,
+  setNoBooks,
+  setLoading
+) => {
+  setLoading(true)
+  setNoBooks(false)
+  let response
+  const startIndex = page * itemsPerPage
+  try {
+    if (query) {
+      console.log(`Fetching books with language: ${language}`)
+      response = await axios.get(
+        `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`
+      )
+    } else if (category) {
+      console.log(`Fetching books with language: ${language}`)
+      response = await axios.get(
+        `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`
+      )
+    }
+
+    if (response && response.data) {
+      if (response.data.length > 0) {
+        setBooks(response.data)
+        setNoBooks(false)
+      } else {
+        console.log('No books returned')
+        setBooks([])
+        if (retries > 0) {
+          console.log(`No books found. Retrying... ${retries} attempts left.`)
+          setTimeout(
+            () =>
+              fetchBooks(
+                query,
+                category,
+                language,
+                page,
+                retries - 1,
+                setBooks,
+                setNoBooks,
+                setLoading
+              ),
+            3000
+          )
+          return
+        } else {
+          console.error('Failed to fetch books after multiple attempts')
+          setBooks([])
+          setNoBooks(true)
+        }
+      }
+    }
+  } catch (error) {
+    if (
+      (error.response && error.response.status === 502) ||
+      (retries > 0 && !error.message.includes('No books returned'))
+    ) {
+      console.log(`Attempt failed. Retrying... ${retries} attempts left.`)
+      setBooks([])
+      setTimeout(
+        () =>
+          fetchBooks(
+            query,
+            category,
+            language,
+            page,
+            retries - 1,
+            setBooks,
+            setNoBooks,
+            setLoading
+          ),
+        3000
+      )
+      return
+    } else {
+      console.error('Failed to fetch books after multiple attempts', error)
+      setBooks([])
+      setNoBooks(true)
+    }
+  }
+  setLoading(false)
+}
+
+export default function BooksList({ searchParam, page, setPage, language }) {
   const [books, setBooks] = useState([])
   const [loading, setLoading] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
   const [noBooks, setNoBooks] = useState(false)
-  const itemsPerPage = 12
+
   if (searchParam.category === '' && searchParam.query === '') {
     searchParam.category = 'Fiction'
-  }
-
-  const fetchBooks = async (query, category, page = 0, retries = 2) => {
-    setLoading(true)
-    setNoBooks(false)
-    let response
-    const startIndex = page * itemsPerPage
-    try {
-      if (query) {
-        response = await axios.get(
-          `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
-        )
-      } else if (category) {
-        response = await axios.get(
-          `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}`
-        )
-      }
-
-      if (response && response.data) {
-        if (response.data.length > 0) {
-          setBooks(response.data)
-          setNoBooks(false)
-        } else {
-          console.log('No books returned')
-          setBooks([])
-          if (retries > 0) {
-            console.log(`No books found. Retrying... ${retries} attempts left.`)
-            setTimeout(
-              () => fetchBooks(query, category, page, retries - 1),
-              3000
-            )
-            return
-          } else {
-            console.error('Failed to fetch books after multiple attempts')
-            setBooks([])
-            setNoBooks(true)
-          }
-        }
-      }
-    } catch (error) {
-      if (
-        (error.response && error.response.status === 502) ||
-        (retries > 0 && !error.message.includes('No books returned'))
-      ) {
-        console.log(`Attempt failed. Retrying... ${retries} attempts left.`)
-        setBooks([])
-        setTimeout(() => fetchBooks(query, category, page, retries - 1), 3000)
-        return
-      } else {
-        console.error('Failed to fetch books after multiple attempts', error)
-        setBooks([])
-        setNoBooks(true)
-      }
-    }
-    setLoading(false)
   }
 
   const handleNextPageClick = () => {
@@ -77,13 +112,23 @@ export default function BooksList({ searchParam, page, setPage }) {
   const handleFirstPageClick = () => {
     setPage(0)
   }
+
   const handlePreviousPageClick = () => {
     setPage(prevPage => (prevPage > 0 ? prevPage - 1 : 0))
   }
 
   useEffect(() => {
-    fetchBooks(searchParam.query, searchParam.category, page)
-  }, [page, searchParam])
+    fetchBooks(
+      searchParam.query,
+      searchParam.category,
+      language,
+      page,
+      2,
+      setBooks,
+      setNoBooks,
+      setLoading
+    )
+  }, [page, searchParam, language])
 
   return (
     <>
@@ -96,14 +141,8 @@ export default function BooksList({ searchParam, page, setPage }) {
       )}
 
       <div className="p-6 w-full m-auto">
-        <h1 className="text-2xl font-bold text-center text-slate-50 mb-5">
-          {'"'}
-          {searchParam.query
-            ? searchParam.query.toUpperCase()
-            : searchParam.category
-            ? searchParam.category.toUpperCase()
-            : ''}
-          {'"'}
+        <h1 className="text-2xl font-bold text-center text-rose-300 mb-5">
+          {searchParam.query ? '"' + searchParam.query.toUpperCase() + '"' : ''}
         </h1>
         {loading && (
           <div className="flex text-center justify-center text-3xl animate-pulse font-semibold text-rose-400 py-20">

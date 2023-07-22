@@ -9,10 +9,11 @@ exports.handler = async function (event, context) {
     category,
     startIndex: start,
     maxResults,
+    language,
   } = event.queryStringParameters
   let startIndex = parseInt(start) || 0
   const mirror = await getFastestMirror()
-  const cacheKey = `${query || category}|${startIndex}`
+  const cacheKey = `${query || category}|${startIndex}|${language}`
 
   if (queryCache[cacheKey]) {
     return {
@@ -20,6 +21,7 @@ exports.handler = async function (event, context) {
       body: JSON.stringify(queryCache[cacheKey]),
     }
   }
+  console.log(language)
 
   const books = []
   const uniqueTitles = new Set()
@@ -30,7 +32,7 @@ exports.handler = async function (event, context) {
         ? `subject:${encodeURIComponent(category)}`
         : encodeURIComponent(query)
       const googleBooksResponse = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchParam}&langRestrict=en,es&startIndex=${startIndex}&maxResults=${maxResults}`
+        `https://www.googleapis.com/books/v1/volumes?q=${searchParam}&langRestrict=${language}&startIndex=${startIndex}&maxResults=${maxResults}`
       )
 
       if (!googleBooksResponse.data.items) {
