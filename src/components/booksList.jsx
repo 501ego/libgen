@@ -22,12 +22,10 @@ const fetchBooks = async (
   const startIndex = page * itemsPerPage
   try {
     if (query) {
-      console.log(`Fetching books with language: ${language}`)
       response = await axios.get(
         `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`
       )
     } else if (category) {
-      console.log(`Fetching books with language: ${language}`)
       response = await axios.get(
         `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`
       )

@@ -21,7 +21,6 @@ exports.handler = async function (event, context) {
       body: JSON.stringify(queryCache[cacheKey]),
     }
   }
-  console.log(language)
 
   const books = []
   const uniqueTitles = new Set()
