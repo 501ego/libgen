@@ -29,8 +29,8 @@ export default function Navbar({ setLanguage, language }) {
             className="peer/Inglés"
             type="radio"
             name="status"
-            value="en"
-            checked={selectedLanguage === 'en'}
+            value="English"
+            checked={selectedLanguage === 'English'}
             onChange={handleChange}
           />
           <label
@@ -44,8 +44,8 @@ export default function Navbar({ setLanguage, language }) {
             className="peer/Español ml-5"
             type="radio"
             name="status"
-            value="es"
-            checked={selectedLanguage === 'es'}
+            value="Spanish"
+            checked={selectedLanguage === 'Spanish'}
             onChange={handleChange}
           />
           <label

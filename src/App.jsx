@@ -9,7 +9,7 @@ function App() {
   const [searchParam, setSearchParam] = useState({ query: '', category: '' })
   const [reset, setReset] = useState(false)
   const [page, setPage] = useState(0)
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState('English')
 
   const handleSearch = query => {
     setSearchParam({ query, category: '' })
