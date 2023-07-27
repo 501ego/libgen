@@ -52,7 +52,7 @@ const fetchBooks = async (
                 setNoBooks,
                 setLoading
               ),
-            3000
+            0
           )
           return
         } else {
@@ -81,7 +81,7 @@ const fetchBooks = async (
             setNoBooks,
             setLoading
           ),
-        3000
+        0
       )
       return
     } else {

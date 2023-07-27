@@ -6,17 +6,18 @@ const LIBRARY_URL = 'http://library.lol/main/'
 
 const limiter = new Bottleneck({
   maxConcurrent: 1,
-  minTime: 500,
+  minTime: 600,
 })
 async function searchLibgen(title, author, retryCount = 5) {
   if (!title || typeof title !== 'string') throw new Error('Invalid title')
   if (!author || typeof author !== 'string') throw new Error('Invalid author')
-
+  title = title.toLowerCase().trim()
+  author = author.toLowerCase().trim()
   const query = `${title} ${author}`
   const options = {
     mirror: LIBGEN_URL,
     query: query,
-    count: 30,
+    count: 1,
   }
 
   try {
