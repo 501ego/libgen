@@ -15,7 +15,7 @@ export default function Navbar({ setLanguage, language }) {
   return (
     <div className="p-3 w-full flex gap-10 justify-center flex-wrap">
       <blockquote className="font-extrabold italic text-center text-white p-2 whitespace-nowrap ml-[50px] md:text-5xl text-4xl">
-        LibGen
+        Search some
         <span className="ml-10 before:block before:absolute before:-inset-2 rotate-12 shadow-xl  shadow-black before:bg-rose-400 before:border-2 before:border-zinc-800 before:rounded-md relative inline-block hover:-rotate-0 transition duration-500 ease-in-out">
           <span className="relative px-2 text-white text-3xl md:text-4xl">
             Books
@@ -29,13 +29,13 @@ export default function Navbar({ setLanguage, language }) {
             className="peer/Inglés"
             type="radio"
             name="status"
-            value="English"
-            checked={selectedLanguage === 'English'}
+            value="en"
+            checked={selectedLanguage === 'en'}
             onChange={handleChange}
           />
           <label
             htmlFor="Inglés"
-            className="peer-checked/Inglés:text-blue-300 peer-checked/Inglés:animate-pulse ml-1  text-rose-300"
+            className="peer-checked/Inglés:text-blue-300 ml-1 text-rose-300"
           >
             Inglés
           </label>
@@ -44,13 +44,13 @@ export default function Navbar({ setLanguage, language }) {
             className="peer/Español ml-5"
             type="radio"
             name="status"
-            value="Spanish"
-            checked={selectedLanguage === 'Spanish'}
+            value="es"
+            checked={selectedLanguage === 'es'}
             onChange={handleChange}
           />
           <label
             htmlFor="Español"
-            className="peer-checked/Español:text-blue-300 peer-checked/Español:animate-pulse ml-1 text-rose-300"
+            className="peer-checked/Español:text-blue-300 ml-1 text-rose-300"
           >
             Español
           </label>

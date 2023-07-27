@@ -1,6 +1,34 @@
 import { Dialog } from '@headlessui/react'
+import { useState } from 'react'
+import axios from 'axios'
 
 export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
+  const [downloadLink, setDownloadLink] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const BASE_URL = '/.netlify/functions'
+  const handleDownload = async (title, author) => {
+    setLoading(true)
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/searchLibgen?${title}&${author}`,
+        {
+          params: {
+            title,
+            author,
+          },
+        }
+      )
+      const downloadLink = response.data.downloadLink
+      if (downloadLink) {
+        setDownloadLink(downloadLink)
+        setLoading(false)
+      }
+      setLoading(false)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <Dialog
       open={isOpen}
@@ -51,18 +79,35 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
                   No existe Vista Previa.
                 </p>
               )}
+              <div className="absolute left-[416px] bottom-[88px]">
+                {loading ? (
+                  <h1 className="text-sm text-center p-2 text-rose-300 animate-pulse ">
+                    Buscando Descarga...
+                  </h1>
+                ) : null}
+              </div>
 
-              {bookDescription.downloadLink ? (
+              {downloadLink ? (
                 <a
-                  href={bookDescription.downloadLink}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-black shadow-md shadow-black px-4 py-2 bg-rose-300 text-base font-semibold hover:text-white hover:bg-rose-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                  href={downloadLink}
+                  className="mt-3 w-full cursor-pointer inline-flex justify-center rounded-md border border-black shadow-md shadow-black px-4 py-2 bg-rose-300 text-base font-semibold hover:text-white hover:bg-rose-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   <p className="text-center font-bold text-sm">Descarga</p>
                 </a>
               ) : (
-                <p className="text-red-400 text-sm mt-3 p-1">
-                  No existe url de descarga.
-                </p>
+                <a
+                  onClick={() => {
+                    handleDownload(
+                      bookDescription.title,
+                      bookDescription.author
+                    )
+                  }}
+                  className="mt-3 w-full cursor-pointer inline-flex justify-center rounded-md border border-black shadow-md shadow-black px-4 py-2 bg-rose-300 text-base font-semibold hover:text-white hover:bg-rose-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  <p className="text-center font-bold text-sm">
+                    Buscar Descarga
+                  </p>
+                </a>
               )}
 
               <button

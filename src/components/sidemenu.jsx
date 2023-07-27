@@ -39,8 +39,14 @@ const plans = [
     category: 'Mathematics',
   },
 ]
+const emptyPlan = { name: '', category: '' }
 
-export default function SideMenu({ setCurrentCategory, reset, setReset }) {
+export default function SideMenu({
+  setCurrentCategory,
+  reset,
+  setReset,
+  category,
+}) {
   const [selected, setSelected] = useState(plans[0])
 
   const selectedCategoryRef = useRef(selected.category)
@@ -58,6 +64,12 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
       setCurrentCategory(selected.category)
     }
   }, [selected, setCurrentCategory])
+
+  useEffect(() => {
+    if (category === '') {
+      setSelected(emptyPlan)
+    }
+  }, [category])
 
   return (
     <RadioGroup value={selected} onChange={setSelected}>
