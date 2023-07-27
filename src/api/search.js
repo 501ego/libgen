@@ -1,5 +1,4 @@
 const axios = require('axios')
-const queryCache = {}
 
 const getBooksFromGoogleAPI = async (
   searchParam,
@@ -49,14 +48,6 @@ exports.handler = async function (event, context) {
   const searchParam = category
     ? `subject:${encodeURIComponent(category)}`
     : encodeURIComponent(query)
-  const cacheKey = `${searchParam}|${language}|${startIndex}`
-
-  if (queryCache[cacheKey]) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify(queryCache[cacheKey]),
-    }
-  }
 
   const books = []
   const uniqueTitles = new Set()
@@ -100,8 +91,6 @@ exports.handler = async function (event, context) {
 
     index += maxResultsNum
   }
-
-  queryCache[cacheKey] = books
 
   return {
     statusCode: 200,

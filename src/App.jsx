@@ -26,6 +26,7 @@ function App() {
   }
 
   const handleLanguage = language => {
+    setPage(0)
     setLanguage(language)
   }
 

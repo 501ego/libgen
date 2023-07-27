@@ -13,7 +13,7 @@ export default function SearchBar({ onSearch, label }) {
     <div>
       <form
         onSubmit={handleSubmit}
-        className="flex justify-center text-center mt-7"
+        className="flex justify-center text-center mt-7 relative"
       >
         <input
           type="text"
@@ -23,7 +23,7 @@ export default function SearchBar({ onSearch, label }) {
           className="py-2 px-4 border text-slate-500 border-black rounded-l-lg flex-grow shadow-sm shadow-black focus:outline-none focus:shadow-md focus:shadow-black"
         />
         {label !== '' && (
-          <p className="text-rose-400 w-full text-lg text-center font-bold absolute mt-2 animate-pulse">
+          <p className="text-rose-400 w-full text-lg text-center font-bold absolute top-0 left-0 p-2 animate-pulse pointer-events-none">
             Resultados de: {label}
           </p>
         )}

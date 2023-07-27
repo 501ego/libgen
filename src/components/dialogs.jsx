@@ -6,6 +6,7 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
   const [downloadLink, setDownloadLink] = useState(null)
   const [loading, setLoading] = useState(false)
   const BASE_URL = '/.netlify/functions'
+
   const handleDownload = async (title, author) => {
     setLoading(true)
     try {
@@ -21,11 +22,14 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
       const downloadLink = response.data.downloadLink
       if (downloadLink) {
         setDownloadLink(downloadLink)
-        setLoading(false)
+      } else {
+        setDownloadLink('Not Found')
       }
-      setLoading(false)
     } catch (error) {
       console.error(error)
+      setDownloadLink('Not Found')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -79,21 +83,30 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
                   No existe Vista Previa.
                 </p>
               )}
-              <div className="absolute left-[416px] bottom-[88px]">
-                {loading ? (
-                  <h1 className="text-sm text-center p-2 text-rose-300 animate-pulse ">
-                    Buscando Descarga...
-                  </h1>
-                ) : null}
-              </div>
-
               {downloadLink ? (
-                <a
-                  href={downloadLink}
-                  className="mt-3 w-full cursor-pointer inline-flex justify-center rounded-md border border-black shadow-md shadow-black px-4 py-2 bg-rose-300 text-base font-semibold hover:text-white hover:bg-rose-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  <p className="text-center font-bold text-sm">Descarga</p>
-                </a>
+                downloadLink === 'Not Found' ? (
+                  <a
+                    onClick={() => {
+                      setDownloadLink(null)
+                      handleDownload(
+                        bookDescription.title,
+                        bookDescription.author
+                      )
+                    }}
+                    className="mt-3 w-full cursor-pointer inline-flex justify-center rounded-md border border-black shadow-md shadow-black px-4 py-2 bg-rose-300 text-base font-semibold hover:text-white hover:bg-rose-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                  >
+                    <p className="text-center font-bold text-sm">
+                      No se Encontró Descarga
+                    </p>
+                  </a>
+                ) : (
+                  <a
+                    href={downloadLink}
+                    className="mt-3 w-full cursor-pointer inline-flex justify-center rounded-md border border-black shadow-md shadow-black px-4 py-2 bg-rose-300 text-base font-semibold hover:text-white hover:bg-rose-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                  >
+                    <p className="text-center font-bold text-sm">Descarga</p>
+                  </a>
+                )
               ) : (
                 <a
                   onClick={() => {
@@ -104,9 +117,15 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
                   }}
                   className="mt-3 w-full cursor-pointer inline-flex justify-center rounded-md border border-black shadow-md shadow-black px-4 py-2 bg-rose-300 text-base font-semibold hover:text-white hover:bg-rose-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
                 >
-                  <p className="text-center font-bold text-sm">
-                    Buscar Descarga
-                  </p>
+                  {loading ? (
+                    <p className="text-center font-bold text-sm">
+                      Buscando Descarga...
+                    </p>
+                  ) : (
+                    <p className="text-center font-bold text-sm">
+                      Buscar Descarga
+                    </p>
+                  )}
                 </a>
               )}
 

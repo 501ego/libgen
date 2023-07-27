@@ -3,6 +3,10 @@ import { RadioGroup } from '@headlessui/react'
 
 const plans = [
   {
+    name: '',
+    category: '',
+  },
+  {
     name: 'Ficción',
     category: 'Fiction',
   },
@@ -39,14 +43,8 @@ const plans = [
     category: 'Mathematics',
   },
 ]
-const emptyPlan = { name: '', category: '' }
 
-export default function SideMenu({
-  setCurrentCategory,
-  reset,
-  setReset,
-  category,
-}) {
+export default function SideMenu({ setCurrentCategory, reset, setReset }) {
   const [selected, setSelected] = useState(plans[0])
 
   const selectedCategoryRef = useRef(selected.category)
@@ -65,61 +63,58 @@ export default function SideMenu({
     }
   }, [selected, setCurrentCategory])
 
-  useEffect(() => {
-    if (category === '') {
-      setSelected(emptyPlan)
-    }
-  }, [category])
-
   return (
     <RadioGroup value={selected} onChange={setSelected}>
       <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
       <div className="flex flex-wrap gap-2 items-center justify-center py-2 lg:px-40 m-auto overflow-hidden max-h-[100px]">
-        {plans.map(plan => (
-          <RadioGroup.Option
-            key={plan.name}
-            value={plan}
-            className={({ active, checked }) =>
-              `${active ? 'ring-2 ring-zinc-900 ring-opacity-60' : ''}
-            ${
-              checked
-                ? 'bg-rose-400 text-white shadow-xl shadow-zinc-900'
-                : 'bg-white shadow-xl shadow-zinc-900 hover:bg-rose-200 hover:text-white'
-            }
-            cursor-pointer rounded-lg px-2  w-[140px] h-10 shadow-md focus:outline-none`
-            }
-          >
-            {({ active, checked }) => (
-              <>
-                <div className="flex items-center justify-between h-full">
-                  <div className="flex items-center">
-                    <div className="text-sm font-bold">
-                      <RadioGroup.Label
-                        as="p"
-                        className={`${
-                          checked ? 'text-white' : 'text-gray-900'
-                        }`}
-                      >
-                        {plan.name}
-                      </RadioGroup.Label>
-                      <RadioGroup.Description
-                        as="span"
-                        className={`inline ${
-                          checked ? 'text-sky-100' : 'text-gray-500'
-                        }`}
-                      ></RadioGroup.Description>
+        {plans.map(
+          plan =>
+            plan.name && (
+              <RadioGroup.Option
+                key={plan.name}
+                value={plan}
+                className={({ active, checked }) =>
+                  `${active ? 'ring-2 ring-zinc-900 ring-opacity-60' : ''}
+              ${
+                checked
+                  ? 'bg-rose-400 text-white shadow-xl shadow-zinc-900'
+                  : 'bg-white shadow-xl shadow-zinc-900 hover:bg-rose-200 hover:text-white'
+              }
+              cursor-pointer rounded-lg px-2  w-[140px] h-10 shadow-md focus:outline-none`
+                }
+              >
+                {({ active, checked }) => (
+                  <>
+                    <div className="flex items-center justify-between h-full">
+                      <div className="flex items-center">
+                        <div className="text-sm font-bold">
+                          <RadioGroup.Label
+                            as="p"
+                            className={`${
+                              checked ? 'text-white' : 'text-gray-900'
+                            }`}
+                          >
+                            {plan.name}
+                          </RadioGroup.Label>
+                          <RadioGroup.Description
+                            as="span"
+                            className={`inline ${
+                              checked ? 'text-sky-100' : 'text-gray-500'
+                            }`}
+                          ></RadioGroup.Description>
+                        </div>
+                      </div>
+                      {checked && (
+                        <div className="shrink-0 text-white">
+                          <CheckIcon className="h-6 w-6" />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                  {checked && (
-                    <div className="shrink-0 text-white">
-                      <CheckIcon className="h-6 w-6" />
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </RadioGroup.Option>
-        ))}
+                  </>
+                )}
+              </RadioGroup.Option>
+            )
+        )}
       </div>
     </RadioGroup>
   )

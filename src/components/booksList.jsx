@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import '../input.css'
 import Dialogs from './dialogs'
 
 const BASE_URL = '/.netlify/functions'
 const itemsPerPage = 20
-
 const fetchBooks = async (
   query,
   category,
@@ -14,7 +13,8 @@ const fetchBooks = async (
   retries = 1,
   setBooks,
   setNoBooks,
-  setLoading
+  setLoading,
+  cancelTokenSource
 ) => {
   setLoading(true)
   setNoBooks(false)
@@ -23,11 +23,13 @@ const fetchBooks = async (
   try {
     if (query) {
       response = await axios.get(
-        `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`
+        `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`,
+        { cancelToken: cancelTokenSource.token }
       )
     } else if (category) {
       response = await axios.get(
-        `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`
+        `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`,
+        { cancelToken: cancelTokenSource.token }
       )
     }
 
@@ -50,7 +52,8 @@ const fetchBooks = async (
                 retries - 1,
                 setBooks,
                 setNoBooks,
-                setLoading
+                setLoading,
+                cancelTokenSource
               ),
             0
           )
@@ -63,8 +66,10 @@ const fetchBooks = async (
       }
     }
   } catch (error) {
-    if (
+    if (axios.isCancel(error)) {
+    } else if (
       (error.response && error.response.status === 502) ||
+      error.response.status === 500 ||
       (retries > 0 && !error.message.includes('No books returned'))
     ) {
       console.log(`Attempt failed. Retrying... ${retries} attempts left.`)
@@ -79,7 +84,8 @@ const fetchBooks = async (
             retries - 1,
             setBooks,
             setNoBooks,
-            setLoading
+            setLoading,
+            cancelTokenSource
           ),
         0
       )
@@ -98,9 +104,13 @@ export default function BooksList({ searchParam, page, setPage, language }) {
   const [loading, setLoading] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
   const [noBooks, setNoBooks] = useState(false)
+  const cancelTokenSourceRef = useRef(null)
 
-  if (searchParam.category === '' && searchParam.query === '') {
-    searchParam.category = 'Poetry'
+  let query = searchParam.query
+  let category = searchParam.category
+
+  if (query === '' && category === '') {
+    query = 'React'
   }
 
   const handleNextPageClick = () => {
@@ -116,17 +126,30 @@ export default function BooksList({ searchParam, page, setPage, language }) {
   }
 
   useEffect(() => {
+    if (cancelTokenSourceRef.current) {
+      cancelTokenSourceRef.current.cancel('New search started')
+    }
+
+    cancelTokenSourceRef.current = axios.CancelToken.source()
+
     fetchBooks(
-      searchParam.query,
-      searchParam.category,
+      query,
+      category,
       language,
       page,
       2,
       setBooks,
       setNoBooks,
-      setLoading
+      setLoading,
+      cancelTokenSourceRef.current
     )
-  }, [page, searchParam, language])
+
+    return () => {
+      if (cancelTokenSourceRef.current) {
+        cancelTokenSourceRef.current.cancel('Component unmounted')
+      }
+    }
+  }, [page, query, category, language])
 
   return (
     <>
