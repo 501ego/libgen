@@ -178,7 +178,7 @@ export default function BooksList({ searchParam, page, setPage, language }) {
               books.map((book, index) => (
                 <div key={`${book.title}-${index}`}>
                   <div key={`${book.title}-${index}`}>
-                    <div className="grid-flow w-[230px] h-[320px]rounded-md">
+                    <div className="grid-flow w-[230px] h-[310px] rounded-md">
                       <div className="text-center">
                         <h2 className="font-extrabold py-1 px-6 text-md text-slate-300 overflow-hidden whitespace-nowrap w-full text-ellipsis">
                           {book.title}
@@ -196,12 +196,9 @@ export default function BooksList({ searchParam, page, setPage, language }) {
                             className="w-[180px] h-[250px] m-auto rounded-sm shadow-md shadow-zinc-800 cursor-pointer hover:mix-blend-plus-lighter hover:shadow-lg hover:shadow-rose-200 transition duration-300 ease-in-out"
                           />
                         </a>
-
-                        <div className="text-center">
-                          <p className="text-slate-300 mb-1 p-1 text-xs overflow-hidden whitespace-nowrap w-full text-ellipsis">
-                            ({book.author})
-                          </p>
-                        </div>
+                        <p className="text-slate-300 mb-1 p-1 text-xs overflow-hidden whitespace-nowrap w-full text-ellipsis px-6">
+                          ({book.author})
+                        </p>
                       </div>
                     </div>
                   </div>

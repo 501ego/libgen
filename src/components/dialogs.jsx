@@ -7,18 +7,19 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
   const [loading, setLoading] = useState(false)
   const BASE_URL = '/.netlify/functions'
 
-  const handleDownload = async (title, author) => {
+  const MAX_RETRIES = 1
+  const RETRY_DELAY = 2000
+
+  const handleDownload = async (title, author, retryCount = 0) => {
     setLoading(true)
     try {
-      const response = await axios.get(
-        `${BASE_URL}/searchLibgen?${title}&${author}`,
-        {
-          params: {
-            title,
-            author,
-          },
-        }
-      )
+      const response = await axios.get(`${BASE_URL}/searchLibgen`, {
+        params: {
+          title,
+          author,
+        },
+        timeout: 26000,
+      })
       const downloadLink = response.data.downloadLink
       if (downloadLink) {
         setDownloadLink(downloadLink)
@@ -27,7 +28,14 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
       }
     } catch (error) {
       console.error(error)
-      setDownloadLink('Not Found')
+      if (error.code === 'ECONNABORTED' && retryCount < MAX_RETRIES) {
+        setTimeout(
+          () => handleDownload(title, author, retryCount + 1),
+          RETRY_DELAY
+        )
+      } else {
+        setDownloadLink('Not Found')
+      }
     } finally {
       setLoading(false)
     }

@@ -11,14 +11,23 @@ const limiter = new Bottleneck({
 })
 
 let currentTask = null
+let cache = {}
 
 async function searchLibgen(title, author, retryCount = 5) {
   if (currentTask) {
     currentTask.cancel()
   }
 
+  const cacheKey = `${title}-${author}`.toLowerCase()
+
+  if (cache[cacheKey]) {
+    return Promise.resolve({
+      downloadLink: cache[cacheKey],
+    })
+  }
+
   currentTask = createCancelableTask(
-    _searchLibgen.bind(null, title, author, retryCount)
+    _searchLibgen.bind(null, title, author, retryCount, cacheKey)
   )
 
   return currentTask.promise
@@ -39,7 +48,7 @@ function createCancelableTask(task) {
   return { promise, cancel }
 }
 
-async function _searchLibgen(title, author, retryCount = 5) {
+async function _searchLibgen(title, author, retryCount = 5, cacheKey) {
   if (!title || typeof title !== 'string') throw new Error('Invalid title')
   if (!author || typeof author !== 'string') throw new Error('Invalid author')
   title = title.toLowerCase().trim()
@@ -49,13 +58,15 @@ async function _searchLibgen(title, author, retryCount = 5) {
 
   try {
     while (retryCount > 0) {
+      let search_in = retryCount % 2 === 0 ? 'author' : 'title'
       const options = {
         mirror: LIBGEN_URL,
         query: query,
-        search_in: 'title',
+        search_in: search_in,
         count: 20,
         offset: offsetCount,
       }
+      console.log('search_in: ', search_in)
       const data = await limiter.schedule(() => libgen.search(options))
       console.log('data: ', data.length)
       let downloadLink = ''
@@ -85,6 +96,14 @@ async function _searchLibgen(title, author, retryCount = 5) {
           const score = fuzzball.ratio(sortedBookAuthor, sortedInputAuthor)
           if (score > 50) {
             console.log('Eureka!')
+            console.log(title)
+
+            cache[cacheKey] = book.downloadLink
+
+            setTimeout(() => {
+              delete cache[cacheKey]
+            }, 60 * 1000)
+
             return {
               downloadLink: book.downloadLink,
             }
@@ -103,13 +122,12 @@ async function _searchLibgen(title, author, retryCount = 5) {
       }
     }
   } catch (err) {
-    if (err.message === 'Task was cancelled') {
+    if (err.response && err.response.status === 500) {
+      console.log('A server error occurred while searching for books')
+    } else if (err.message === 'Task was cancelled') {
       console.log('The search task was cancelled')
     } else {
-      console.error(
-        `An error occurred while searching for books: ${err.message}`
-      )
-      return { downloadLink: null }
+      console.log(`An error occurred while searching for books: ${err.message}`)
     }
   }
 }
