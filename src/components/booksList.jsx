@@ -109,10 +109,6 @@ export default function BooksList({ searchParam, page, setPage, language }) {
   let query = searchParam.query
   let category = searchParam.category
 
-  if (query === '' && category === '') {
-    query = 'React'
-  }
-
   const handleNextPageClick = () => {
     setPage(prevPage => prevPage + 1)
   }
