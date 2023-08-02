@@ -4,7 +4,7 @@ import '../input.css'
 import Dialogs from './dialogs'
 
 const BASE_URL = '/.netlify/functions'
-const itemsPerPage = 21
+const itemsPerPage = 24
 
 const handleError = (
   error,
@@ -211,29 +211,30 @@ export default function BooksList({ searchParam, page, setPage, language }) {
             {!loading &&
               books.map((book, index) => (
                 <div key={`${book.title}-${index}`}>
-                  <div key={`${book.title}-${index}`}>
-                    <div className="grid-flow w-[210px] h-[310px] rounded-m">
-                      <div className="text-center">
-                        <h2 className="font-extrabold py-1 px-6 text-md text-slate-300 overflow-hidden whitespace-nowrap w-full text-ellipsis">
-                          {book.title}
-                        </h2>
-                      </div>
-                      <div>
-                        <a
-                          className="flex p-1"
-                          onClick={() => {
-                            setSelectedBook(book)
-                          }}
-                        >
-                          <img
-                            src={book.cover}
-                            className="w-[160px] h-[230px] m-auto rounded-sm shadow-md shadow-zinc-800 cursor-pointer hover:mix-blend-plus-lighter hover:shadow-lg hover:shadow-rose-200 transition duration-300 ease-in-out"
-                          />
-                        </a>
-                        <p className="text-slate-300 mb-1 p-1 text-xs overflow-hidden whitespace-nowrap w-full text-ellipsis px-6">
-                          ({book.author})
-                        </p>
-                      </div>
+                  <div className="grid-flow w-[210px] h-[310px] rounded-m">
+                    <div className="text-center">
+                      <h2 className="font-extrabold py-1 px-6 text-md text-slate-300 overflow-hidden whitespace-nowrap w-full text-ellipsis">
+                        {book.title}
+                      </h2>
+                    </div>
+                    <div>
+                      <button
+                        className="flex p-1"
+                        onClick={() => {
+                          setSelectedBook(book)
+                        }}
+                      >
+                        <img
+                          src={book.cover}
+                          alt="book cover"
+                          loading="lazy"
+                          style={{ objectFit: 'cover' }}
+                          className="w-[160px] h-[230px] m-auto rounded-sm shadow-md shadow-zinc-800 cursor-pointer hover:mix-blend-plus-lighter hover:shadow-md hover:shadow-rose-200 transition duration-300 ease-in-out"
+                        />
+                      </button>
+                      <p className="text-slate-300 mb-1 p-1 text-xs overflow-hidden whitespace-nowrap w-full text-ellipsis px-6">
+                        ({book.author})
+                      </p>
                     </div>
                   </div>
                 </div>

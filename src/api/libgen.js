@@ -93,7 +93,6 @@ async function _searchLibgen(title, author, retryCount = 5, cacheKey) {
             .join(' ')
           const score = fuzzball.ratio(sortedBookAuthor, sortedInputAuthor)
           if (score > 50) {
-            // Cache the download link
             cache.set(cacheKey, book.downloadLink)
 
             return {

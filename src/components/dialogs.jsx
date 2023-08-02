@@ -45,7 +45,7 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
     <Dialog
       open={isOpen}
       onClose={() => setIsOpen(false)}
-      className="fixed z-10 inset-0 overflow-y-auto"
+      className="fixed z-10 inset-0 overflow-y-auto p-7"
     >
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <Dialog.Overlay className="fixed inset-0 bg-gray-900 bg-opacity-5 transition-opacity" />
@@ -55,19 +55,19 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
         >
           &#8203;
         </span>
-        <div className="inline-block align-bottom border p-3 bg-white rounded-lg text-left overflow-hidden shadow-xl shadow-black transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+        <div className="inline-block align-bottom border p-1 bg-white rounded-lg text-left overflow-hidden shadow-xl shadow-black transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
           <Dialog.Panel>
-            <div className="max-h-[550px] overflow-auto">
+            <div className="xs:max-h-[350px] lg:max-h-[550px] overflow-auto">
               <Dialog.Title
                 id="book-dialog"
-                className="text-4xl font-bold text-gray-700 text-center mb-2"
+                className="text-3xl font-bold text-gray-700 text-center mb-2"
               >
                 {bookDescription.title}
               </Dialog.Title>
               <Dialog.Description className="text-sm text-rose-300 text-center">
                 Autor: ({bookDescription.author})
               </Dialog.Description>
-              <p className="text-md text-justify p-3 ">
+              <p className="text-sm text-justify p-3 ">
                 {bookDescription.description}
               </p>
               <p className="text-sm text-end p-3 text-zinc-800 mt-3">
