@@ -43,7 +43,7 @@ function App() {
     <>
       <header
         aria-label="Site header"
-        className="bg-zinc-900 align-middle h-[85px] flex justify-center items-center"
+        className="align-middle h-[85px] flex justify-center items-center"
       >
         <div className="flex justify-center items-center w-full max-w-7xl mx-auto">
           <div className="ml-[67px] justify-start hidden sm:block"></div>
@@ -76,19 +76,17 @@ function App() {
         </section>
       </main>
       <footer>
-        <div className="bg-zinc-900">
-          <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
-            <h6 className="text-center text-base font-semibold uppercase text-gray-400 tracking-wider">
-              © 2023 University project made by {'Diego.'}
-            </h6>
-            <p className="mt-8 text-center text-sm text-gray-400">
-              {'All rights reserved.'}
-            </p>
-            <p className="mt-8 text-center text-xs text-gray-400">
-              {' '}
-              Sometimes the API is slow, please be patient.
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+          <h6 className="text-center text-base font-semibold uppercase text-gray-400 tracking-wider">
+            © 2023 University project made by {'Diego.'}
+          </h6>
+          <p className="mt-8 text-center text-sm text-gray-400">
+            {'All rights reserved.'}
+          </p>
+          <p className="mt-8 text-center text-xs text-gray-400">
+            {' '}
+            Sometimes the API is slow, please be patient.
+          </p>
         </div>
       </footer>
     </>
