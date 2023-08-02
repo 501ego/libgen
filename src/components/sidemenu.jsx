@@ -64,8 +64,10 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
   }, [selected, setCurrentCategory])
 
   return (
-    <RadioGroup value={selected} onChange={setSelected}>
-      <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
+    <RadioGroup value={selected} onChange={setSelected} as="fieldset">
+      <RadioGroup.Label as="legend" className="sr-only">
+        Category selection
+      </RadioGroup.Label>
       <div className="flex flex-wrap gap-2 items-center justify-center py-2 lg:px-40 m-auto overflow-hidden max-h-[100px]">
         {plans.map(
           plan =>
@@ -122,7 +124,13 @@ export default function SideMenu({ setCurrentCategory, reset, setReset }) {
 
 function CheckIcon(props) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+      aria-label="Check Icon"
+      role="img"
+    >
       <circle cx={12} cy={12} r={12} fill="#ffff" opacity="0.4" />
       <path
         d="M7 13l3 3 7-7"

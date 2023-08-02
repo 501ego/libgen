@@ -1,29 +1,30 @@
 const libgen = require('libgen')
 const Bottleneck = require('bottleneck')
 const fuzzball = require('fuzzball')
+const NodeCache = require('node-cache')
 
-const LIBGEN_URL = 'http://libgen.is'
+const LIBGEN_URL = 'http://gen.lib.rus.ec'
 const LIBRARY_URL = 'http://library.lol/main/'
 
 const limiter = new Bottleneck({
   maxConcurrent: 1,
-  minTime: 2000,
+  minTime: 1000,
 })
 
+const cache = new NodeCache({ stdTTL: 60, checkperiod: 120 })
+
 let currentTask = null
-let cache = {}
 
 async function searchLibgen(title, author, retryCount = 5) {
-  if (currentTask) {
-    currentTask.cancel()
-  }
-
   const cacheKey = `${title}-${author}`.toLowerCase()
 
-  if (cache[cacheKey]) {
-    return Promise.resolve({
-      downloadLink: cache[cacheKey],
-    })
+  const cachedLink = cache.get(cacheKey)
+  if (cachedLink) {
+    return Promise.resolve({ downloadLink: cachedLink })
+  }
+
+  if (currentTask) {
+    currentTask.cancel()
   }
 
   currentTask = createCancelableTask(
@@ -62,14 +63,11 @@ async function _searchLibgen(title, author, retryCount = 5, cacheKey) {
       const options = {
         mirror: LIBGEN_URL,
         query: query,
-        search_in: search_in,
         count: 20,
         offset: offsetCount,
       }
-      console.log('search_in: ', search_in)
       const data = await limiter.schedule(() => libgen.search(options))
-      console.log('data: ', data.length)
-      let downloadLink = ''
+
       if (data && data.length > 0) {
         for (const item of data) {
           const title = item.title
@@ -77,7 +75,7 @@ async function _searchLibgen(title, author, retryCount = 5, cacheKey) {
           let cleanedBookAuthor = bookAuthor.replace(/[^a-zA-Z0-9 ]/g, '')
           let cleanAuthor = author.replace(/[^a-zA-Z0-9 ]/g, '')
           const md5 = item.md5
-          downloadLink = `${LIBRARY_URL}${md5.toLowerCase()}`
+          const downloadLink = `${LIBRARY_URL}${md5.toLowerCase()}`
           const book = {
             title,
             cleanedBookAuthor,
@@ -95,14 +93,8 @@ async function _searchLibgen(title, author, retryCount = 5, cacheKey) {
             .join(' ')
           const score = fuzzball.ratio(sortedBookAuthor, sortedInputAuthor)
           if (score > 50) {
-            console.log('Eureka!')
-            console.log(title)
-
-            cache[cacheKey] = book.downloadLink
-
-            setTimeout(() => {
-              delete cache[cacheKey]
-            }, 60 * 1000)
+            // Cache the download link
+            cache.set(cacheKey, book.downloadLink)
 
             return {
               downloadLink: book.downloadLink,
@@ -112,10 +104,7 @@ async function _searchLibgen(title, author, retryCount = 5, cacheKey) {
       }
       retryCount--
       offsetCount += 20
-      console.log('retryCount: ', retryCount)
-      console.log('offSetCount: ', offsetCount)
       if (retryCount === 0) {
-        console.log('No match found')
         return {
           downloadLink: null,
         }

@@ -58,7 +58,10 @@ export default function Dialogs({ isOpen, setIsOpen, bookDescription }) {
         <div className="inline-block align-bottom border p-3 bg-white rounded-lg text-left overflow-hidden shadow-xl shadow-black transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
           <Dialog.Panel>
             <div className="max-h-[550px] overflow-auto">
-              <Dialog.Title className="text-4xl font-bold text-gray-700 text-center mb-2">
+              <Dialog.Title
+                id="book-dialog"
+                className="text-4xl font-bold text-gray-700 text-center mb-2"
+              >
                 {bookDescription.title}
               </Dialog.Title>
               <Dialog.Description className="text-sm text-rose-300 text-center">

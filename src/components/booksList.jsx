@@ -4,7 +4,52 @@ import '../input.css'
 import Dialogs from './dialogs'
 
 const BASE_URL = '/.netlify/functions'
-const itemsPerPage = 20
+const itemsPerPage = 21
+
+const handleError = (
+  error,
+  retries,
+  query,
+  category,
+  language,
+  page,
+  setBooks,
+  setNoBooks,
+  setLoading,
+  cancelTokenSource
+) => {
+  console.error(error)
+  if (axios.isCancel(error)) {
+  } else if (
+    (error.response && error.response.status === 502) ||
+    error.response.status === 500 ||
+    (retries > 0 && !error.message.includes('No books returned'))
+  ) {
+    console.log(`Attempt failed. Retrying... ${retries} attempts left.`)
+    setBooks([])
+    setTimeout(
+      () =>
+        fetchBooks(
+          query,
+          category,
+          language,
+          page,
+          retries - 1,
+          setBooks,
+          setNoBooks,
+          setLoading,
+          cancelTokenSource
+        ),
+      1000
+    )
+    return
+  } else {
+    console.error('Failed to fetch books after multiple attempts', error)
+    setBooks([])
+    setNoBooks(true)
+  }
+}
+
 const fetchBooks = async (
   query,
   category,
@@ -18,21 +63,22 @@ const fetchBooks = async (
 ) => {
   setLoading(true)
   setNoBooks(false)
-  let response
   const startIndex = page * itemsPerPage
+  const params = {
+    startIndex,
+    maxResults: itemsPerPage,
+    language,
+  }
+  if (query) {
+    params.query = query
+  } else if (category) {
+    params.category = category
+  }
   try {
-    if (query) {
-      response = await axios.get(
-        `${BASE_URL}/search?query=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`,
-        { cancelToken: cancelTokenSource.token }
-      )
-    } else if (category) {
-      response = await axios.get(
-        `${BASE_URL}/search?category=${category}&startIndex=${startIndex}&maxResults=${itemsPerPage}&language=${language}`,
-        { cancelToken: cancelTokenSource.token }
-      )
-    }
-
+    const response = await axios.get(`${BASE_URL}/search`, {
+      params,
+      cancelToken: cancelTokenSource.token,
+    })
     if (response && response.data) {
       if (response.data.length > 0) {
         setBooks(response.data)
@@ -55,46 +101,38 @@ const fetchBooks = async (
                 setLoading,
                 cancelTokenSource
               ),
-            0
+            1000
           )
           return
         } else {
-          console.error('Failed to fetch books after multiple attempts')
-          setBooks([])
-          setNoBooks(true)
-        }
-      }
-    }
-  } catch (error) {
-    if (axios.isCancel(error)) {
-    } else if (
-      (error.response && error.response.status === 502) ||
-      error.response.status === 500 ||
-      (retries > 0 && !error.message.includes('No books returned'))
-    ) {
-      console.log(`Attempt failed. Retrying... ${retries} attempts left.`)
-      setBooks([])
-      setTimeout(
-        () =>
-          fetchBooks(
+          handleError(
+            new Error('Failed to fetch books after multiple attempts'),
+            retries,
             query,
             category,
             language,
             page,
-            retries - 1,
             setBooks,
             setNoBooks,
             setLoading,
             cancelTokenSource
-          ),
-        0
-      )
-      return
-    } else {
-      console.error('Failed to fetch books after multiple attempts', error)
-      setBooks([])
-      setNoBooks(true)
+          )
+        }
+      }
     }
+  } catch (error) {
+    handleError(
+      error,
+      retries,
+      query,
+      category,
+      language,
+      page,
+      setBooks,
+      setNoBooks,
+      setLoading,
+      cancelTokenSource
+    )
   }
   setLoading(false)
 }
@@ -169,12 +207,12 @@ export default function BooksList({ searchParam, page, setPage, language }) {
             No se encontraron libros.
           </div>
         ) : (
-          <div className="grid gap-3 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 justify-items-center items-center">
+          <div className="grid gap-3 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 justify-items-center items-center">
             {!loading &&
               books.map((book, index) => (
                 <div key={`${book.title}-${index}`}>
                   <div key={`${book.title}-${index}`}>
-                    <div className="grid-flow w-[230px] h-[310px] rounded-md">
+                    <div className="grid-flow w-[210px] h-[310px] rounded-m">
                       <div className="text-center">
                         <h2 className="font-extrabold py-1 px-6 text-md text-slate-300 overflow-hidden whitespace-nowrap w-full text-ellipsis">
                           {book.title}
@@ -189,7 +227,7 @@ export default function BooksList({ searchParam, page, setPage, language }) {
                         >
                           <img
                             src={book.cover}
-                            className="w-[180px] h-[250px] m-auto rounded-sm shadow-md shadow-zinc-800 cursor-pointer hover:mix-blend-plus-lighter hover:shadow-lg hover:shadow-rose-200 transition duration-300 ease-in-out"
+                            className="w-[160px] h-[230px] m-auto rounded-sm shadow-md shadow-zinc-800 cursor-pointer hover:mix-blend-plus-lighter hover:shadow-lg hover:shadow-rose-200 transition duration-300 ease-in-out"
                           />
                         </a>
                         <p className="text-slate-300 mb-1 p-1 text-xs overflow-hidden whitespace-nowrap w-full text-ellipsis px-6">

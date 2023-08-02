@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react'
 export default function SearchBar({ onSearch, label, setLanguage, language }) {
   const [query, setQuery] = useState('')
   const [selectedLanguage, setSelectedLanguage] = useState(language)
-  let placeHolder = label == '' ? 'buscar' : label
+  let placeHolder = label === '' ? 'buscar' : label
 
   const handleSubmit = e => {
     e.preventDefault()
     onSearch(query)
     setQuery('')
-    placeHolder = { label }
+    placeHolder = label
   }
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function SearchBar({ onSearch, label, setLanguage, language }) {
   }
 
   return (
-    <div>
+    <section aria-label="Search bar">
       <div className="flex justify-center items-center flex-nowrap text-center">
         <input
           id="Inglés"
@@ -32,6 +32,7 @@ export default function SearchBar({ onSearch, label, setLanguage, language }) {
           value="en"
           checked={selectedLanguage === 'en'}
           onChange={handleChange}
+          aria-label="Select English"
         />
         <label
           htmlFor="Inglés"
@@ -47,6 +48,7 @@ export default function SearchBar({ onSearch, label, setLanguage, language }) {
           value="es"
           checked={selectedLanguage === 'es'}
           onChange={handleChange}
+          aria-label="Select Spanish"
         />
         <label
           htmlFor="Español"
@@ -58,6 +60,7 @@ export default function SearchBar({ onSearch, label, setLanguage, language }) {
       <form
         onSubmit={handleSubmit}
         className="flex justify-center text-center mt-7 relative"
+        aria-label="Search form"
       >
         <input
           type="text"
@@ -65,15 +68,17 @@ export default function SearchBar({ onSearch, label, setLanguage, language }) {
           onChange={e => setQuery(e.target.value)}
           placeholder={placeHolder}
           className="py-2 px-4 border text-slate-500 border-black rounded-l-lg flex-grow shadow-sm shadow-black focus:outline-none focus:shadow-md focus:shadow-black"
+          aria-label="Search input"
         />
 
         <button
           type="submit"
           className="bg-blue-400 hover:bg-blue-500 text-black shadow-sm shadow-black font-semibold py-2 px-4 rounded-r-lg focus:outline-none border border-black focus:shadow-md focus:shadow-slate-300"
+          aria-label="Submit search"
         >
           Buscar
         </button>
       </form>
-    </div>
+    </section>
   )
 }
