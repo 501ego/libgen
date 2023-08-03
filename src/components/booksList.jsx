@@ -253,6 +253,8 @@ export default function BooksList({
       </div>
       <div className="flex justify-center gap-1 mt-10">
         <button
+          aria-label="first page"
+          id="first-page"
           onClick={handleFirstPageClick}
           className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
         >
@@ -272,6 +274,8 @@ export default function BooksList({
           </p>
         </button>
         <button
+          aria-label="Previous page"
+          id="previous-page"
           onClick={handlePreviousPageClick}
           className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
         >
@@ -291,6 +295,8 @@ export default function BooksList({
           </p>
         </button>
         <button
+          aria-label="next page"
+          id="next-Page"
           onClick={handleNextPageClick}
           className="inline-block bg-blue-300 py-1 px-2 rounded-md shadow-sm shadow-black hover:bg-blue-500 hover:text-white border border-black"
         >
