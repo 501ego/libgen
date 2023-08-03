@@ -1,5 +1,8 @@
 export default function FooterContent() {
-  ;<div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+  ;<section
+    aria-label="Footer content"
+    className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8"
+  >
     <h6 className="text-center text-base font-semibold uppercase text-gray-400 tracking-wider">
       © 2023 University project made by {'Diego.'}
     </h6>
@@ -10,5 +13,5 @@ export default function FooterContent() {
       {' '}
       Sometimes the API is slow, please be patient.
     </p>
-  </div>
+  </section>
 }

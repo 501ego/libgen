@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import BooksList from './components/booksList'
 import Navbar from './components/navbar'
 import SearchBar from './components/searchBar'
@@ -71,7 +72,15 @@ function App() {
   }, [searchParam, page, language])
 
   return (
-    <>
+    <HelmetProvider>
+      <Helmet>
+        <title>Get Some Books</title>
+        <meta
+          name="description"
+          content="Libgen & Google API- A place to find and Download books."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Helmet>
       <header
         aria-label="Site header"
         className="align-middle h-[85px] flex justify-center items-center"
@@ -112,10 +121,10 @@ function App() {
           </Router>
         </section>
       </main>
-      <footer aria-label="Footer content">
+      <footer aria-label="Footer">
         <FooterContent />
       </footer>
-    </>
+    </HelmetProvider>
   )
 }
 
