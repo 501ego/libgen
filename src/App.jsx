@@ -3,41 +3,72 @@ import BooksList from './components/booksList'
 import Navbar from './components/navbar'
 import SearchBar from './components/searchBar'
 import SideMenu from './components/sidemenu'
+import FooterContent from './components/footerContent'
 import './input.css'
+import { useLocation, Router, Route } from 'wouter'
 
 function App() {
-  const [searchParam, setSearchParam] = useState({
-    query: 'Javascript python',
-    category: '',
-  })
+  const initialPage = localStorage.getItem('page')
+    ? JSON.parse(localStorage.getItem('page'))
+    : 0
+
+  const [searchParam, setSearchParam] = useState(
+    JSON.parse(localStorage.getItem('searchParam')) || {
+      query: 'Javascript python',
+      category: '',
+    }
+  )
+  const [page, setPage] = useState(initialPage)
   const [reset, setReset] = useState(false)
-  const [page, setPage] = useState(0)
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState(
+    localStorage.getItem('language') || 'en'
+  )
   const [label, setLabel] = useState('')
+  const [location, setLocation] = useLocation(
+    `/search/${searchParam.query}/${searchParam.category}/${page}/${language}`
+  )
+
+  const handlePage = page => {
+    setPage(page)
+    setLocation(
+      `/search/${searchParam.query}/${searchParam.category}/${page}/${language}`
+    )
+  }
 
   const handleSearch = query => {
     setTimeout(() => {
       setSearchParam({ query, category: '' })
     }, 90)
     setPage(0)
-    setReset(true)
     setLabel(query)
+    setReset(true)
+    setLocation(`/search/${query}/0/${language}`)
   }
 
   const handleCategory = category => {
-    setSearchParam({ query: '', category })
     setPage(0)
+    setLocation(`/search/${category}/0/${language}`)
+    setSearchParam({ query: '', category })
     setLabel('')
   }
 
   const handleLanguage = language => {
     setPage(0)
     setLanguage(language)
+    setLocation(
+      `/search/${searchParam.query}/${searchParam.category}/${page}/${language}`
+    )
   }
 
   useEffect(() => {
+    localStorage.setItem('searchParam', JSON.stringify(searchParam))
+    localStorage.setItem('page', JSON.stringify(page))
+    localStorage.setItem('language', language)
     document.documentElement.lang = language
-  }, [language])
+    setLocation(
+      `/search/${searchParam.query}/${searchParam.category}/${page}/${language}`
+    )
+  }, [searchParam, page, language])
 
   return (
     <>
@@ -67,27 +98,22 @@ function App() {
             setReset={setReset}
             category={searchParam.category}
           />
-          <BooksList
-            searchParam={searchParam}
-            page={page}
-            setPage={setPage}
-            language={language}
-          />
+
+          <Router>
+            <Route path={location}>
+              <BooksList
+                handlePage={handlePage}
+                searchParam={searchParam}
+                page={page}
+                setPage={setPage}
+                language={language}
+              />
+            </Route>
+          </Router>
         </section>
       </main>
-      <footer>
-        <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
-          <h6 className="text-center text-base font-semibold uppercase text-gray-400 tracking-wider">
-            © 2023 University project made by {'Diego.'}
-          </h6>
-          <p className="mt-8 text-center text-sm text-gray-400">
-            {'All rights reserved.'}
-          </p>
-          <p className="mt-8 text-center text-xs text-gray-400">
-            {' '}
-            Sometimes the API is slow, please be patient.
-          </p>
-        </div>
+      <footer aria-label="Footer content">
+        <FooterContent />
       </footer>
     </>
   )

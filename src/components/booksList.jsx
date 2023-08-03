@@ -137,7 +137,13 @@ const fetchBooks = async (
   setLoading(false)
 }
 
-export default function BooksList({ searchParam, page, setPage, language }) {
+export default function BooksList({
+  searchParam,
+  page,
+  setPage,
+  handlePage,
+  language,
+}) {
   const [books, setBooks] = useState([])
   const [loading, setLoading] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
@@ -148,15 +154,18 @@ export default function BooksList({ searchParam, page, setPage, language }) {
   let category = searchParam.category
 
   const handleNextPageClick = () => {
-    setPage(prevPage => prevPage + 1)
+    setPage(page + 1)
+    handlePage(page + 1)
   }
 
   const handleFirstPageClick = () => {
     setPage(0)
+    handlePage(0)
   }
 
   const handlePreviousPageClick = () => {
-    setPage(prevPage => (prevPage > 0 ? prevPage - 1 : 0))
+    setPage(page - 1)
+    handlePage(page - 1)
   }
 
   useEffect(() => {
