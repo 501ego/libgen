@@ -219,33 +219,30 @@ export default function BooksList({
           <div className="grid gap-3 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 justify-items-center items-center">
             {!loading &&
               books.map((book, index) => (
-                <div key={`${book.title}-${index}`}>
-                  <div className="grid-flow w-[210px] h-[310px] rounded-m">
-                    <div className="text-center">
-                      <h2 className="font-extrabold py-1 px-6 text-md text-slate-300 overflow-hidden whitespace-nowrap w-full text-ellipsis">
-                        {book.title}
-                      </h2>
-                    </div>
-                    <div>
-                      <button
-                        className="flex p-1"
-                        onClick={() => {
-                          setSelectedBook(book)
-                        }}
-                      >
-                        <img
-                          src={book.cover}
-                          alt="book cover"
-                          loading="lazy"
-                          style={{ objectFit: 'cover' }}
-                          className="w-[160px] h-[230px] m-auto rounded-sm shadow-md shadow-zinc-800 cursor-pointer hover:mix-blend-plus-lighter hover:shadow-md hover:shadow-rose-200 transition duration-300 ease-in-out"
-                        />
-                      </button>
-                      <p className="text-slate-300 mb-1 p-1 text-xs overflow-hidden whitespace-nowrap w-full text-ellipsis px-6">
-                        ({book.author})
-                      </p>
-                    </div>
-                  </div>
+                <div
+                  key={`${book.title}-${index}`}
+                  className="flex flex-col items-center justify-start w-[210px] h-[310px] rounded-m"
+                >
+                  <h2 className="font-extrabold py-1 px-6 text-md text-slate-300 overflow-hidden whitespace-nowrap w-full text-ellipsis text-center">
+                    {book.title}
+                  </h2>
+                  <button
+                    className="relative flex items-center justify-center w-full"
+                    onClick={() => {
+                      setSelectedBook(book)
+                    }}
+                  >
+                    <img
+                      src={book.cover}
+                      alt="book cover"
+                      loading="lazy"
+                      style={{ objectFit: 'cover' }}
+                      className="w-[160px] h-[230px] rounded-sm shadow-md shadow-zinc-800 cursor-pointer hover:mix-blend-plus-lighter hover:shadow-md hover:shadow-rose-200 transition duration-300 ease-in-out"
+                    />
+                  </button>
+                  <p className="text-slate-300 mb-1 p-1 text-xs overflow-hidden whitespace-nowrap w-full text-ellipsis text-center px-7">
+                    ({book.author})
+                  </p>
                 </div>
               ))}
           </div>
