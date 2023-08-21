@@ -8,7 +8,7 @@ const getBooksFromGoogleAPI = async (
 ) => {
   try {
     const response = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=${searchParam}&orderBy=newest&langRestrict=${language}&startIndex=${startIndex}&maxResults=${maxResults}`
+      `https://www.googleapis.com/books/v1/volumes?q=${searchParam}&langRestrict=${language}&startIndex=${startIndex}&maxResults=${maxResults}`
     )
     return response.data.items || []
   } catch (error) {
@@ -54,7 +54,7 @@ exports.handler = async function (event, context) {
 
   let index = startIndex
 
-  while (books.length < 40) {
+  while (books.length < 24) {
     const items = await getBooksFromGoogleAPI(
       searchParam,
       language,
@@ -83,7 +83,7 @@ exports.handler = async function (event, context) {
         uniqueTitles.add(item.volumeInfo.title)
         books.push(formatBook(item))
 
-        if (books.length >= 40) {
+        if (books.length >= 24) {
           break
         }
       }

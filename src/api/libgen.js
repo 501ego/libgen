@@ -3,7 +3,7 @@ const Bottleneck = require('bottleneck')
 const fuzzball = require('fuzzball')
 const NodeCache = require('node-cache')
 
-const LIBGEN_URL = 'http://gen.lib.rus.ec'
+const LIBGEN_URL = 'http://libgen.is/'
 const LIBRARY_URL = 'http://library.lol/main/'
 
 const limiter = new Bottleneck({
@@ -59,7 +59,6 @@ async function _searchLibgen(title, author, retryCount = 5, cacheKey) {
 
   try {
     while (retryCount > 0) {
-      let search_in = retryCount % 2 === 0 ? 'author' : 'title'
       const options = {
         mirror: LIBGEN_URL,
         query: query,
